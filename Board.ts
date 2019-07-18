@@ -1,6 +1,7 @@
 export class Board {
     isCompleted: boolean;
     board: string[][];
+    size: number;
 
     constructor(n: number = 3, m: number = 3) {
         if (n !== m || n < 3) {
@@ -10,6 +11,7 @@ export class Board {
             m = 3;
         }
 
+        this.size = n;
         this.isCompleted = false;
         this.board = [];
         for (let i = 0; i < n; i++) {
@@ -33,20 +35,22 @@ export class Board {
             for (let j = 0; j < this.board[i].length; j++) {
                 boardString += ` ${this.board[i][j]}`;
             }
-            boardString += '\n'
+            if (i !== this.board.length - 1) {
+                boardString += '\n'
+            }
         }
         console.log(boardString);
     }
 
     updateBoard(row: number, col: number, sign: string) {
         this.board[row][col] = sign;
-        this.isCompleted = (this.checkRow(row) || this.checkCol(col) || this.mainDiagonal() || this.antiDiagonal()) ? true : false;
+        this.isCompleted = (this.checkRow(row) || this.checkCol(col) || ((row === col) && this.mainDiagonal()) || (((row + col) === (this.size - 1)) && this.antiDiagonal())) ? true : false;
     }
 
     private checkRow(row: number): boolean {
         let firstVal = this.board[row][0];
         let ans = true;
-        for (let j = 0; j < this.board[row].length; j++) {
+        for (let j = 1; j < this.board[row].length; j++) {
             if (this.board[row][j] === '*' || this.board[row][j] !== firstVal) {
                 ans = false;
                 break;
@@ -58,7 +62,7 @@ export class Board {
     private checkCol(col: number): boolean {
         let firstVal = this.board[0][col];
         let ans = true;
-        for (let i = 0; i < this.board.length; i++) {
+        for (let i = 1; i < this.board.length; i++) {
             if (this.board[i][col] === '*' || this.board[i][col] !== firstVal) {
                 ans = false;
                 break;
@@ -87,8 +91,8 @@ export class Board {
             if (this.board[i][j] === '*' || this.board[i][j] !== firstVal) {
                 ans = false;
                 break;
-                j--;
             }
+            j--;
         }
         return ans;
     }

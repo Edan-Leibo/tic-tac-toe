@@ -42,6 +42,7 @@ export class Game {
                 break;
             case GameStatus.Completed:
                 console.log(`${this.currentPlayer.name} won!`);
+                console.log("Moves history:");
                 console.log(this.history.join('\n'));
                 break;
         }
@@ -51,13 +52,14 @@ export class Game {
         //Check if it is a bad move
         if (this.status === GameStatus.Completed || this.board.isOccupiedCell(row, col)) return false;
 
-        //add to moves history
+        //Add to moves history
         this.history.push(`${this.currentPlayer.name} placed ${this.currentPlayer.sign} in (${row},${col})`);
         this.board.updateBoard(row, col, this.currentPlayer.sign);
         if (this.board.isCompleted) {
             this.status = GameStatus.Completed;
         }
         else {
+            //Switch turns
             if (this.currentPlayer.name === this.playerOne.name) {
                 this.currentPlayer = this.playerTwo;
             }
@@ -67,7 +69,6 @@ export class Game {
         }
         return true;
     }
-
 
 }
 
